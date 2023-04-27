@@ -1,7 +1,28 @@
+import { useContext } from "react";
+
 import Card from "../ui/Card";
 import classes from "./MeetupItem.module.css";
+import FavoritesContext from "../../store/favorites-context";
 
 const MeetupItem = props => {
+  const favCtx = useContext(FavoritesContext);
+
+  const itemIsFavorite = favCtx.itemIsFavorite(props.id);
+
+  const toggleFavoriteStatusHandler = () => {
+    if (itemIsFavorite) {
+      favCtx.removeFavorite(props.id);
+    } else {
+      favCtx.addFavorite({
+        id: props.id,
+        title: props.title,
+        image: props.image,
+        address: props.address,
+        description: props.description
+      });
+    };
+  };
+
   return (
     <li className={classes.item}>
       <Card>
@@ -14,7 +35,7 @@ const MeetupItem = props => {
           <p>{props.description}</p>
         </div>
         <div className={classes.actions}>
-          <button>To Favorites</button>
+          <button onClick={toggleFavoriteStatusHandler}>{itemIsFavorite ? "Remove Favorite" : "Add Favorite"}</button>
         </div>
       </Card>
     </li>
